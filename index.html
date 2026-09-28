@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beka's Code | Master the Core of the Web</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            orange: '#f97316',
+                            cssblue: '#38bdf8',
+                            jsyellow: '#fbbf24',
+                            dark: '#0f172a',
+                            surface: '#1e293b',
+                            card: '#1e293b',
+                            border: '#334155'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .code-editor-line {
+            line-height: 1.6;
+        }
+        .tab-btn.active {
+            border-bottom: 2px solid #38bdf8;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+        .glassmorphism {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .glow-orange {
+            box-shadow: 0 0 25px -5px rgba(249, 115, 22, 0.3);
+        }
+        .glow-blue {
+            box-shadow: 0 0 25px -5px rgba(56, 189, 248, 0.3);
+        }
+        .glow-yellow {
+            box-shadow: 0 0 25px -5px rgba(251, 191, 36, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-cyan-500 selection:text-black min-h-screen flex flex-col transition-colors duration-300">
+
+    <header class="sticky top-0 z-50 glassmorphism border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#home" onclick="switchView('home')" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-sky-400 p-0.5 shadow-lg group-hover:scale-105 transition-transform">
+                    <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center">
+                        <span class="font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-sky-400">&lt;B/&gt;</span>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight text-white flex items-center gap-1">
+                        Beka's <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-sky-400 to-amber-300">Code</span>
+                    </span>
+                    <span class="hidden sm:block text-[10px] tracking-wider uppercase text-slate-400 font-medium">Master the Core of the Web</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links (Desktop) -->
+            <nav class="hidden md:flex items-center gap-1 font-medium text-sm text-slate-300">
+                <button onclick="switchView('home')" class="nav-item px-3 py-1.5 rounded-lg hover:text-white hover:bg-slate-800/80 transition" data-view="home">Overview</button>
+                <button onclick="switchView('html')" class="nav-item px-3 py-1.5 rounded-lg hover:text-orange-400 hover:bg-slate-800/80 transition flex items-center gap-1.5" data-view="html">
+                    <i class="fa-brands fa-html5 text-orange-500"></i> HTML5
+                </button>
+                <button onclick="switchView('css')" class="nav-item px-3 py-1.5 rounded-lg hover:text-sky-400 hover:bg-slate-800/80 transition flex items-center gap-1.5" data-view="css">
+                    <i class="fa-brands fa-css3-alt text-sky-400"></i> CSS3
+                </button>
+                <button onclick="switchView('js')" class="nav-item px-3 py-1.5 rounded-lg hover:text-amber-400 hover:bg-slate-800/80 transition flex items-center gap-1.5" data-view="js">
+                    <i class="fa-brands fa-js text-amber-400"></i> JavaScript
+                </button>
+                <button onclick="switchView('playground')" class="nav-item px-3 py-1.5 rounded-lg hover:text-emerald-400 hover:bg-slate-800/80 transition flex items-center gap-1.5" data-view="playground">
+                    <i class="fa-solid fa-code text-emerald-400"></i> Live Sandbox
+                </button>
+                <button onclick="switchView('quiz')" class="nav-item px-3 py-1.5 rounded-lg hover:text-purple-400 hover:bg-slate-800/80 transition flex items-center gap-1.5" data-view="quiz">
+                    <i class="fa-solid fa-brain text-purple-400"></i> Quiz Arena
+                </button>
+            </nav>
+
+            <!-- Quick Action / Status -->
+            <div class="flex items-center gap-3">
+                <div id="badge-pill" class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-slate-800/90 border border-slate-700 rounded-full text-xs font-mono text-slate-300">
+                    <i class="fa-solid fa-trophy text-amber-400"></i>
+                    <span id="badge-count">0/3 Badges</span>
+                </div>
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800">
+                    <i class="fa-solid fa-bars text-lg" id="menu-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-1 bg-slate-900 border-b border-slate-800">
+            <button onclick="switchView('home'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">Home Overview</button>
+            <button onclick="switchView('html'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-orange-400 hover:bg-slate-800">HTML5 Guide & Playground</button>
+            <button onclick="switchView('css'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sky-400 hover:bg-slate-800">CSS3 Styling & Flexbox</button>
+            <button onclick="switchView('js'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-amber-400 hover:bg-slate-800">JavaScript Engine & Console</button>
+            <button onclick="switchView('playground'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-emerald-400 hover:bg-slate-800">Live Code Sandbox</button>
+            <button onclick="switchView('quiz'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-purple-400 hover:bg-slate-800">Interactive Quiz Arena</button>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- SECTION 1: HOME OVERVIEW -->
+        <section id="view-home" class="space-y-16">
+            <!-- Hero banner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800 p-8 md:p-14 text-center">
+                <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 border border-slate-700/60 text-xs font-medium text-slate-300 mb-6">
+                    <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>100% Focused on the 3 Web Fundamentals</span>
+                </div>
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight md:leading-tight">
+                    Master <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-sky-400 to-amber-300">HTML, CSS & JavaScript</span> from the ground up.
+                </h1>
+                <p class="mt-5 text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                    No bloat, no framework fatigue. Clear deep-dive guides, interactive visualizers, live in-browser code editor, and challenging quizzes created for future senior engineers.
+                </p>
+
+                <!-- Hero CTA Buttons -->
+                <div class="mt-8 flex flex-wrap justify-center items-center gap-4">
+                    <button onclick="switchView('html')" class="px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 shadow-lg shadow-orange-500/25 transition-transform hover:-translate-y-0.5">
+                        Start with HTML5 &rarr;
+                    </button>
+                    <button onclick="switchView('playground')" class="px-6 py-3 rounded-xl font-semibold bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition">
+                        Open Live Sandbox
+                    </button>
+                    <button onclick="switchView('quiz')" class="px-6 py-3 rounded-xl font-semibold bg-purple-900/40 hover:bg-purple-800/50 text-purple-300 border border-purple-700/50 transition">
+                        Test Your Skills
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pillars of Web Dev -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- HTML Pillar -->
+                <div class="p-6 rounded-2xl bg-slate-900/60 border border-orange-500/20 hover:border-orange-500/50 transition-all group hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-400 text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-html5"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-orange-400 transition-colors">1. HTML5: The Skeleton</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Learn clean semantic structure, accessibility (ARIA), modern forms, multimedia APIs, and SEO fundamentals.
+                    </p>
+                    <button onclick="switchView('html')" class="text-xs font-semibold text-orange-400 hover:underline flex items-center gap-1">
+                        Explore HTML Modules <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- CSS Pillar -->
+                <div class="p-6 rounded-2xl bg-slate-900/60 border border-sky-500/20 hover:border-sky-500/50 transition-all group hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-400 text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-css3-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-sky-400 transition-colors">2. CSS3: The Skin & Style</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Master the Box Model, Flexbox layouts, CSS Grid, keyframe animations, responsive media queries, and modern variables.
+                    </p>
+                    <button onclick="switchView('css')" class="text-xs font-semibold text-sky-400 hover:underline flex items-center gap-1">
+                        Explore CSS Modules <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- JS Pillar -->
+                <div class="p-6 rounded-2xl bg-slate-900/60 border border-amber-500/20 hover:border-amber-500/50 transition-all group hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-js"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-amber-400 transition-colors">3. JavaScript: The Brain</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Dive deep into DOM manipulation, async/await, closures, promises, arrays & objects, event loop, and modern ES6+.
+                    </p>
+                    <button onclick="switchView('js')" class="text-xs font-semibold text-amber-400 hover:underline flex items-center gap-1">
+                        Explore JavaScript Modules <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Features Highlights -->
+            <div class="rounded-2xl bg-slate-900 border border-slate-800 p-8">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white">Why Beka's Code?</h2>
+                        <p class="text-slate-400 text-sm mt-1">Built to help you understand what actually happens behind every UI framework.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-mono bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700"><i class="fa-solid fa-bolt text-amber-400 mr-1.5"></i>Zero External Setup</span>
+                        <span class="text-xs font-mono bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700"><i class="fa-solid fa-code text-cyan-400 mr-1.5"></i>Built-in Compiler</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-amber-400 font-mono text-sm block font-bold mb-1">01. Step-by-Step Notes</span>
+                        <p class="text-xs text-slate-400">Written from scratch with clear diagrams, mental models, and copy-paste syntax cards.</p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-sky-400 font-mono text-sm block font-bold mb-1">02. Live Demos</span>
+                        <p class="text-xs text-slate-400">Tweak flex properties and DOM buttons directly in real time to see the visual changes.</p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-purple-400 font-mono text-sm block font-bold mb-1">03. Certification Quizzes</span>
+                        <p class="text-xs text-slate-400">18+ tested questions across beginner and advanced concepts with detailed answer rationales.</p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-emerald-400 font-mono text-sm block font-bold mb-1">04. In-Browser Sandbox</span>
+                        <p class="text-xs text-slate-400">Write HTML, style with CSS, and script with JS inside an isolated live browser sandbox.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-html" class="hidden space-y-8">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-800 gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-xs font-mono text-orange-400 uppercase tracking-widest mb-1">
+                        <i class="fa-brands fa-html5 text-orange-500"></i> Module 01
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">HTML5: Structure & Semantics</h2>
+                    <p class="text-slate-400 text-sm mt-1">The bedrock of the web. Learn semantic markup, forms, accessibility, and modern structural tags.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="loadTopicInSandbox('html')" class="px-4 py-2 bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/30 rounded-xl text-xs font-medium flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-play"></i> Open in Sandbox
+                    </button>
+                    <button onclick="startQuizWithTopic('html')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-medium transition">
+                        Take HTML Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Grid with Lesson Selector -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- Sidebar Lessons -->
+                <div class="space-y-2">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-2">Table of Contents</p>
+                    <button onclick="setHtmlLesson('semantics')" class="html-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition bg-slate-800 text-orange-400 border border-orange-500/30" data-lesson="semantics">
+                        1. Semantic Tags & SEO
+                    </button>
+                    <button onclick="setHtmlLesson('forms')" class="html-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:bg-slate-800/60" data-lesson="forms">
+                        2. Forms, Validation & Inputs
+                    </button>
+                    <button onclick="setHtmlLesson('domtree')" class="html-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:bg-slate-800/60" data-lesson="domtree">
+                        3. DOM Tree & Page Skeleton
+                    </button>
+                    <button onclick="setHtmlLesson('cheatsheet')" class="html-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:bg-slate-800/60" data-lesson="cheatsheet">
+                        4. Essential HTML Cheatsheet
+                    </button>
+                </div>
+
+                <!-- Main Lesson Reader -->
+                <div class="lg:col-span-3 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6" id="html-content-area">
+                    <!-- Default loaded content: Semantics -->
+                </div>
+            </div>
+        </section>
+
+        <section id="view-css" class="hidden space-y-8">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-800 gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-xs font-mono text-sky-400 uppercase tracking-widest mb-1">
+                        <i class="fa-brands fa-css3-alt text-sky-400"></i> Module 02
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">CSS3: Styling, Flexbox & Grid</h2>
+                    <p class="text-slate-400 text-sm mt-1">Transform bare layouts into stunning, fluid, and responsive user experiences.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="loadTopicInSandbox('css')" class="px-4 py-2 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/30 rounded-xl text-xs font-medium flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-play"></i> Open in Sandbox
+                    </button>
+                    <button onclick="startQuizWithTopic('css')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-medium transition">
+                        Take CSS Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- CSS Interactive Flexbox Playground & Lessons -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- Sidebar Lessons -->
+                <div class="space-y-2">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-2">Table of Contents</p>
+                    <button onclick="setCssLesson('boxmodel')" class="css-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition bg-slate-800 text-sky-400 border border-sky-500/30" data-lesson="boxmodel">
+                        1. The Box Model & Sizing
+                    </button>
+                    <button onclick="setCssLesson('flexbox')" class="css-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:bg-slate-800/60" data-lesson="flexbox">
+                        2. Interactive Flexbox Visualizer
+                    </button>
+                    <button onclick="setCssLesson('grid')" class="css-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:bg-slate-800/60" data-lesson="grid">
+                        3. CSS Grid in 5 Minutes
+                    </button>
+                    <button onclick="setCssLesson('cheatsheet')" class="css-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:bg-slate-800/60" data-lesson="cheatsheet">
+                        4. Selectors & Specificity
+                    </button>
+                </div>
+
+                <!-- Main CSS Lesson Area -->
+                <div class="lg:col-span-3 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6" id="css-content-area">
+                    <!-- Default loaded content: Box Model -->
+                </div>
+            </div>
+        </section>
+
+        <section id="view-js" class="hidden space-y-8">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-800 gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-xs font-mono text-amber-400 uppercase tracking-widest mb-1">
+                        <i class="fa-brands fa-js text-amber-400"></i> Module 03
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">JavaScript: The Engine</h2>
+                    <p class="text-slate-400 text-sm mt-1">Bring your websites to life with logic, interactivity, async programming, and DOM power.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="loadTopicInSandbox('js')" class="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-medium flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-play"></i> Open in Sandbox
+                    </button>
+                    <button onclick="startQuizWithTopic('js')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-medium transition">
+                        Take JS Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- Sidebar Lessons -->
+                <div class="space-y-2">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-2">Table of Contents</p>
+                    <button onclick="setJsLesson('dom')" class="js-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition bg-slate-800 text-amber-400 border border-amber-500/30" data-lesson="dom">
+                        1. DOM & Event Listeners
+                    </button>
+                    <button onclick="setJsLesson('arrays')" class="js-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:bg-slate-800/60" data-lesson="arrays">
+                        2. Array Methods (map, filter, reduce)
+                    </button>
+                    <button onclick="setJsLesson('async')" class="js-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:bg-slate-800/60" data-lesson="async">
+                        3. Promises & Async / Await
+                    </button>
+                    <button onclick="setJsLesson('mini-runner')" class="js-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:bg-slate-800/60" data-lesson="mini-runner">
+                        4. Interactive JS Mini-Console
+                    </button>
+                </div>
+
+                <!-- Main Lesson Reader -->
+                <div class="lg:col-span-3 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6" id="js-content-area">
+                    <!-- Default loaded content: DOM -->
+                </div>
+            </div>
+        </section>
+
+        <section id="view-playground" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                <div>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-code text-emerald-400"></i> Beka's Live Code Sandbox
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Write your code and see instant updates in real time.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="resetSandboxTemplate('starter')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg text-slate-300 font-mono transition">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Default Starter
+                    </button>
+                    <button onclick="resetSandboxTemplate('counter')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg text-slate-300 font-mono transition">
+                        Interactive Counter
+                    </button>
+                    <button onclick="resetSandboxTemplate('cards')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg text-slate-300 font-mono transition">
+                        Flexbox Card
+                    </button>
+                    <button onclick="runSandboxCode()" class="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl text-sm shadow-lg shadow-emerald-500/20 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-play"></i> Run Code
+                    </button>
+                </div>
+            </div>
+
+            <!-- Code Editors & Preview Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[720px]">
+                <!-- Editors Container -->
+                <div class="flex flex-col bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+                    <!-- Tab switches -->
+                    <div class="flex items-center bg-slate-950 border-b border-slate-800 px-4 py-2 gap-2 text-xs font-mono">
+                        <button onclick="selectEditorTab('html')" id="tab-html" class="px-3 py-1.5 rounded-lg bg-orange-500/20 text-orange-400 font-semibold border border-orange-500/30 flex items-center gap-1.5">
+                            <i class="fa-brands fa-html5"></i> index.html
+                        </button>
+                        <button onclick="selectEditorTab('css')" id="tab-css" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-sky-400 hover:bg-slate-900 transition flex items-center gap-1.5">
+                            <i class="fa-brands fa-css3-alt"></i> styles.css
+                        </button>
+                        <button onclick="selectEditorTab('js')" id="tab-js" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-amber-400 hover:bg-slate-900 transition flex items-center gap-1.5">
+                            <i class="fa-brands fa-js"></i> script.js
+                        </button>
+                        <div class="ml-auto text-slate-500 text-[11px]">
+                            Auto-sync enabled
+                        </div>
+                    </div>
+
+                    <!-- Editor Areas -->
+                    <div class="relative flex-grow p-4 bg-slate-950 font-mono text-sm overflow-hidden">
+                        <!-- HTML Textarea -->
+                        <textarea id="editor-html" spellcheck="false" class="w-full h-full bg-transparent resize-none outline-none text-slate-200 leading-relaxed font-mono selection:bg-orange-500 selection:text-black" placeholder="<!-- Write HTML here -->"></textarea>
+                        <!-- CSS Textarea -->
+                        <textarea id="editor-css" spellcheck="false" class="hidden w-full h-full bg-transparent resize-none outline-none text-sky-200 leading-relaxed font-mono selection:bg-sky-500 selection:text-black" placeholder="/* Write CSS here */"></textarea>
+                        <!-- JS Textarea -->
+                        <textarea id="editor-js" spellcheck="false" class="hidden w-full h-full bg-transparent resize-none outline-none text-amber-200 leading-relaxed font-mono selection:bg-amber-500 selection:text-black" placeholder="// Write JavaScript here"></textarea>
+                    </div>
+
+                    <!-- Editor bottom bar -->
+                    <div class="bg-slate-950 border-t border-slate-800 px-4 py-2 text-[11px] text-slate-500 font-mono flex items-center justify-between">
+                        <span>UTF-8 | Single Frame Sandbox</span>
+                        <span>Press 'Run Code' or change text to render</span>
+                    </div>
+                </div>
+
+                <!-- Live Preview IFrame Container -->
+                <div class="flex flex-col bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+                    <div class="flex items-center justify-between bg-slate-950 border-b border-slate-800 px-4 py-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+                            <span class="text-xs font-mono text-slate-400 ml-2">Live Output (iframe)</span>
+                        </div>
+                        <button onclick="runSandboxCode()" title="Refresh Frame" class="text-slate-400 hover:text-white text-xs">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                        </button>
+                    </div>
+                    <div class="relative flex-grow bg-white">
+                        <iframe id="sandbox-preview" title="Sandbox Output" class="w-full h-full border-0"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-quiz" class="hidden space-y-8">
+            <div class="max-w-4xl mx-auto space-y-6">
+                <!-- Arena Banner -->
+                <div class="text-center space-y-2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/30 text-xs font-mono">
+                        <i class="fa-solid fa-shield-halved"></i> Interactive Knowledge Evaluator
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">Quiz Arena</h2>
+                    <p class="text-slate-400 text-sm max-w-lg mx-auto">
+                        Test your practical understanding of HTML semantics, CSS layout quirks, and JavaScript asynchronous behavior.
+                    </p>
+                </div>
+
+                <!-- Topic selector pills -->
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="setQuizCategory('all')" id="quiz-btn-all" class="quiz-cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-purple-600 text-white shadow-md shadow-purple-600/30 transition">
+                        All Topics (18 Qs)
+                    </button>
+                    <button onclick="setQuizCategory('html')" id="quiz-btn-html" class="quiz-cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">
+                        <i class="fa-brands fa-html5 text-orange-500 mr-1"></i> HTML5 (6 Qs)
+                    </button>
+                    <button onclick="setQuizCategory('css')" id="quiz-btn-css" class="quiz-cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">
+                        <i class="fa-brands fa-css3-alt text-sky-400 mr-1"></i> CSS3 (6 Qs)
+                    </button>
+                    <button onclick="setQuizCategory('js')" id="quiz-btn-js" class="quiz-cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">
+                        <i class="fa-brands fa-js text-amber-400 mr-1"></i> JavaScript (6 Qs)
+                    </button>
+                </div>
+
+                <!-- Quiz Card -->
+                <div id="quiz-box" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-slate-800 h-2 rounded-full mb-8 overflow-hidden">
+                        <div id="quiz-progress-bar" class="bg-gradient-to-r from-purple-500 to-indigo-500 h-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+
+                    <!-- Question Status -->
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-4">
+                        <span id="quiz-question-number">Question 1 of 6</span>
+                        <span id="quiz-badge-category" class="px-2.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-purple-400 uppercase font-bold text-[10px]">HTML</span>
+                    </div>
+
+                    <!-- Question Text -->
+                    <h3 id="quiz-question-text" class="text-xl sm:text-2xl font-bold text-white leading-snug mb-6">
+                        Loading question...
+                    </h3>
+
+                    <!-- Code Snippet Container (if applicable) -->
+                    <div id="quiz-code-container" class="hidden mb-6 bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-sm text-cyan-300 overflow-x-auto">
+                        <pre><code id="quiz-code-text"></code></pre>
+                    </div>
+
+                    <!-- Options Container -->
+                    <div id="quiz-options-container" class="space-y-3 mb-6">
+                        <!-- Options generated in JS -->
+                    </div>
+
+                    <!-- Explanation Box -->
+                    <div id="quiz-explanation-box" class="hidden p-4 rounded-2xl bg-slate-950 border border-slate-800 text-sm space-y-2 mb-6 transition-all">
+                        <div class="flex items-center gap-2 font-bold text-emerald-400" id="explanation-header">
+                            <i class="fa-solid fa-circle-check"></i> Explanation
+                        </div>
+                        <p id="quiz-explanation-text" class="text-slate-300 text-xs sm:text-sm leading-relaxed"></p>
+                    </div>
+
+                    <!-- Next button -->
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-800/80">
+                        <div class="text-xs font-mono text-slate-400">
+                            Current Score: <span id="current-score-text" class="text-white font-bold">0</span>
+                        </div>
+                        <button id="quiz-next-btn" onclick="nextQuestion()" disabled class="px-6 py-2.5 rounded-xl font-bold text-sm bg-purple-600 hover:bg-purple-700 disabled:opacity-40 disabled:cursor-not-allowed text-white transition flex items-center gap-2 shadow-lg shadow-purple-600/20">
+                            <span>Next Question</span> <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Finished Quiz Results State -->
+                <div id="quiz-results-card" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-2xl">
+                    <div class="w-20 h-20 mx-auto rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-4xl text-purple-400 animate-bounce">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-white">Challenge Complete!</h3>
+                        <p class="text-slate-400 text-sm mt-1" id="results-subtitle">Here is how you performed in Beka's Code Arena:</p>
+                    </div>
+
+                    <!-- Score display -->
+                    <div class="inline-block p-6 rounded-2xl bg-slate-950 border border-slate-800">
+                        <div class="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400 font-mono" id="results-score-display">
+                            5 / 6
+                        </div>
+                        <div class="text-xs text-slate-400 uppercase tracking-widest mt-1 font-mono" id="results-percentage">
+                            83% Mastery
+                        </div>
+                    </div>
+
+                    <div id="results-badge-unlock" class="text-sm font-medium text-amber-300 bg-amber-500/10 border border-amber-500/30 p-3 rounded-xl max-w-md mx-auto">
+                        <i class="fa-solid fa-medal mr-1"></i> New Badge Earned!
+                    </div>
+
+                    <div class="flex justify-center gap-4 pt-4">
+                        <button onclick="restartQuiz()" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-sm transition">
+                            Retry Quiz
+                        </button>
+                        <button onclick="switchView('playground')" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-sm border border-slate-700 transition">
+                            Code in Sandbox
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-20 border-t border-slate-800/80 bg-slate-950/70 text-slate-400 text-xs py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="font-mono font-bold text-white">&lt;Beka's Code/&gt;</span>
+                <span>— The Essential Trio: HTML, CSS & JavaScript</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <span>Free & Open Curriculum</span>
+                <span>No Frameworks Required</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global State
+        const state = {
+            activeView: 'home',
+            activeEditorTab: 'html',
+            activeHtmlLesson: 'semantics',
+            activeCssLesson: 'boxmodel',
+            activeJsLesson: 'dom',
+            quiz: {
+                category: 'all',
+                currentIndex: 0,
+                score: 0,
+                selectedAnswer: null,
+                answered: false,
+                filteredList: []
+            },
+            badges: {
+                html: false,
+                css: false,
+                js: false
+            }
+        };
+
+        // Comprehensive Quiz Bank (6 for each = 18 total)
+        const quizBank = [
+            // HTML
+            {
+                category: 'html',
+                question: 'Which HTML element is the most semantically correct for independent, self-contained content like a blog post or news item?',
+                options: ['<section>', '<article>', '<div>', '<main>'],
+                answer: 1,
+                explanation: '<article> represents a self-contained composition in a document that is independently distributable or reusable (e.g., a blog post, forum post, or news card). <section> is for thematic grouping.'
+            },
+            {
+                category: 'html',
+                question: 'What is the primary accessibility purpose of the "alt" attribute on an <img> element?',
+                options: [
+                    'To show tooltip text on hover',
+                    'To provide screen readers and fallback description if image fails to load',
+                    'To specify the image mime type',
+                    'To automatically compress the image'
+                ],
+                answer: 1,
+                explanation: 'The alt attribute conveys the meaning and context of an image to screen readers for visually impaired users and displays when the image cannot be downloaded.'
+            },
+            {
+                category: 'html',
+                question: 'Which of the following input types automatically includes built-in email pattern validation on form submission?',
+                options: ['<input type="text" validate="email">', '<input type="email">', '<input type="mail">', '<input pattern="email">'],
+                answer: 1,
+                explanation: '<input type="email"> instructs modern browsers to validate syntax matching email formats before triggering form submission.'
+            },
+            {
+                category: 'html',
+                question: 'What does the HTML "defer" attribute on a <script> tag do?',
+                options: [
+                    'It stops the script from ever executing',
+                    'It downloads the script asynchronously and executes only after the HTML document is fully parsed',
+                    'It executes the script before any HTML is parsed',
+                    'It forces the browser to evaluate it in a separate thread'
+                ],
+                answer: 1,
+                explanation: '"defer" allows HTML parsing to continue without blocking, downloads the script file in parallel, and executes it in order right before DOMContentLoaded fires.'
+            },
+            {
+                category: 'html',
+                question: 'Which HTML5 element represents the primary navigation links of a website?',
+                options: ['<header>', '<navigate>', '<nav>', '<links>'],
+                answer: 2,
+                explanation: '<nav> is specifically designated for sections of a page that link to other pages or to parts within the page.'
+            },
+            {
+                category: 'html',
+                question: 'What is the correct way to connect an <input> to its corresponding <label> for screen reader support?',
+                options: [
+                    'Using label="input-id"',
+                    'Matching the label\'s "for" attribute to the input\'s "id" attribute',
+                    'Matching the label\'s "id" to the input\'s "name"',
+                    'Placing the input inside a <div> with class="labeled"'
+                ],
+                answer: 1,
+                explanation: 'The label "for" attribute must match the input\'s unique "id". Clicking the label also shifts focus to the input.'
+            },
+
+            // CSS
+            {
+                category: 'css',
+                question: 'In the standard CSS Box Model, what does the property "box-sizing: border-box" do?',
+                options: [
+                    'Removes margins completely from the element',
+                    'Includes padding and border within the specified element width and height',
+                    'Adds a visible 1px solid black border by default',
+                    'Forces the element to be display: flex'
+                ],
+                answer: 1,
+                explanation: 'With "box-sizing: border-box", the width and height properties include content, padding, and border, making responsive sizing drastically more predictable.'
+            },
+            {
+                category: 'css',
+                question: 'In CSS Flexbox, what does "justify-content" align?',
+                options: [
+                    'Items along the Cross Axis',
+                    'Items along the Main Axis',
+                    'Only text inside flex children',
+                    'The flex container itself inside the viewport'
+                ],
+                answer: 1,
+                explanation: '"justify-content" aligns flex items along the primary (main) axis (horizontal if flex-direction is row, vertical if column).'
+            },
+            {
+                category: 'css',
+                question: 'Which selector has the HIGHEST specificity weight in standard CSS?',
+                options: [
+                    '.nav-item.active (2 classes)',
+                    '#navbar (1 ID)',
+                    'header nav ul li a (5 elements)',
+                    'div > p.highlight (1 element + 1 class)'
+                ],
+                answer: 1,
+                explanation: 'An ID selector (#navbar) has a specificity value of (0,1,0,0) which outweighs any combination of classes (0,0,x,0) or elements (0,0,0,x).'
+            },
+            {
+                category: 'css',
+                question: 'What CSS property allows creating an auto-flowing grid with columns at least 200px wide that fill remaining space?',
+                options: [
+                    'grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));',
+                    'grid-columns: fill(200px);',
+                    'grid-auto-flow: columns 200px;',
+                    'flex-wrap: grid(200px);'
+                ],
+                answer: 0,
+                explanation: '"repeat(auto-fit, minmax(200px, 1fr))" is the gold standard for fully responsive grids without requiring media queries.'
+            },
+            {
+                category: 'css',
+                question: 'What does "position: absolute" align relative to?',
+                options: [
+                    'Always the <body> element',
+                    'Its closest ancestor with a position other than "static"',
+                    'Its directly preceding sibling',
+                    'The center of the screen'
+                ],
+                answer: 1,
+                explanation: 'An absolutely positioned element is positioned relative to its closest positioned ancestor (e.g., relative, absolute, fixed, or sticky).'
+            },
+            {
+                category: 'css',
+                question: 'What unit is relative to the font-size of the ROOT (html) element?',
+                options: ['em', 'rem', 'ch', 'vh'],
+                answer: 1,
+                explanation: '"rem" stands for Root EM. Unlike "em" which is relative to its parent element, "rem" always refers to the <html> root element\'s font-size.'
+            },
+
+            // JAVASCRIPT
+            {
+                category: 'js',
+                question: 'What is the output of: typeof null in JavaScript?',
+                options: ['"null"', '"undefined"', '"object"', '"boolean"'],
+                answer: 2,
+                explanation: 'In JavaScript, typeof null returns "object". This is a historic bug from the first version of JS in 1995 that remains for backward compatibility.'
+            },
+            {
+                category: 'js',
+                question: 'What does the Array method .map() return?',
+                options: [
+                    'The original array mutated in place',
+                    'A new array with the results of calling a provided function on every element',
+                    'A single reduced accumulated value',
+                    'A boolean indicating if all elements passed a test'
+                ],
+                answer: 1,
+                explanation: '.map() creates a brand new array populated with the return values of calling the provided function on every item without mutating the original array.'
+            },
+            {
+                category: 'js',
+                question: 'What is the main difference between "==" and "===" in JavaScript?',
+                options: [
+                    '"==" compares types and values; "===" compares references',
+                    '"==" performs type coercion before comparison; "===" requires strict equality without coercion',
+                    '"===" is slower and deprecated in ES6',
+                    'There is no functional difference'
+                ],
+                answer: 1,
+                explanation: '"==" (loose equality) coerces types (e.g. 5 == "5" is true), while "===" (strict equality) checks that both value and type match (5 === "5" is false).'
+            },
+            {
+                category: 'js',
+                question: 'What will this async snippet log to the console?\n\nconsole.log(1);\nsetTimeout(() => console.log(2), 0);\nPromise.resolve().then(() => console.log(3));\nconsole.log(4);',
+                options: ['1, 2, 3, 4', '1, 4, 3, 2', '1, 4, 2, 3', '4, 1, 3, 2'],
+                answer: 1,
+                explanation: 'Synchronous code runs first (1, 4). Microtasks like Promise.then run next (3). Macrotasks like setTimeout run last (2). Therefore: 1, 4, 3, 2.'
+            },
+            {
+                category: 'js',
+                question: 'How do you attach a click event listener to a button with id "btn"?',
+                options: [
+                    'document.getElementById("btn").listen("click", fn);',
+                    'document.getElementById("btn").addEventListener("click", fn);',
+                    'document.querySelector("#btn").attachEvent("click", fn);',
+                    'btn.on("click", fn);'
+                ],
+                answer: 1,
+                explanation: 'The standard W3C DOM method is .addEventListener(eventType, handlerFunction).'
+            },
+            {
+                category: 'js',
+                question: 'What is a Closure in JavaScript?',
+                options: [
+                    'A way to close browser windows programmatically',
+                    'A function bundled together with references to its surrounding lexical environment',
+                    'A syntax error when a bracket is missing',
+                    'An obsolete feature replaced by classes'
+                ],
+                answer: 1,
+                explanation: 'A closure gives an inner function access to an outer function\'s scope even after the outer function has finished executing.'
+            }
+        ];
+
+        const htmlLessons = {
+            semantics: `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-orange-500/20 text-orange-400">Lesson 01</span>
+                    <h3 class="text-2xl font-bold text-white">Semantic HTML: Giving Meaning to Markup</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Semantic HTML means using elements that clearly describe their meaning to both the browser and the developer. Instead of making an endless nest of generic <code class="text-orange-400">&lt;div&gt;</code> tags, semantic elements improve SEO, accessibility (screen readers), and maintainability.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+                        <div class="bg-slate-950 p-4 rounded-xl border border-red-500/30">
+                            <h4 class="text-red-400 font-bold text-xs font-mono uppercase mb-2">❌ Non-Semantic (Bad Practice)</h4>
+                            <pre class="text-xs font-mono text-slate-300 leading-relaxed overflow-x-auto"><code>&lt;div class="header"&gt;
+  &lt;div class="nav"&gt;...&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="main-content"&gt;
+  &lt;div class="post"&gt;...&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="footer"&gt;...&lt;/div&gt;</code></pre>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-emerald-500/30">
+                            <h4 class="text-emerald-400 font-bold text-xs font-mono uppercase mb-2">✅ Clean Semantic HTML5</h4>
+                            <pre class="text-xs font-mono text-slate-300 leading-relaxed overflow-x-auto"><code>&lt;header&gt;
+  &lt;nav&gt;...&lt;/nav&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;article&gt;...&lt;/article&gt;
+&lt;/main&gt;
+&lt;footer&gt;...&lt;/footer&gt;</code></pre>
+                        </div>
+                    </div>
+
+                    <h4 class="text-lg font-bold text-white mt-6">Key Semantic Elements to Memorize:</h4>
+                    <ul class="list-disc list-inside text-slate-300 text-sm space-y-2">
+                        <li><strong class="text-orange-400">&lt;main&gt;</strong>: Holds the central content of the document. Only one visible per document.</li>
+                        <li><strong class="text-orange-400">&lt;nav&gt;</strong>: Encloses key navigation blocks (primary menus, breadcrumbs).</li>
+                        <li><strong class="text-orange-400">&lt;article&gt;</strong>: Self-contained content that can be reused anywhere (blog post, product card).</li>
+                        <li><strong class="text-orange-400">&lt;section&gt;</strong>: Groups related thematic content (e.g. features, testimonials).</li>
+                        <li><strong class="text-orange-400">&lt;aside&gt;</strong>: Secondary sidebar content indirectly related to the main content.</li>
+                    </ul>
+                </div>
+            `,
+            forms: `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-orange-500/20 text-orange-400">Lesson 02</span>
+                    <h3 class="text-2xl font-bold text-white">Forms, Validation & User Inputs</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        HTML forms are the primary way users pass data to web applications. Modern HTML provides strong client-side validation right out of the box with attributes like <code class="text-orange-400">required</code>, <code class="text-orange-400">minlength</code>, and regex <code class="text-orange-400">pattern</code>.
+                    </p>
+
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 my-4 font-mono text-xs overflow-x-auto text-orange-300">
+                        <pre><code>&lt;form action="/api/register" method="POST"&gt;
+  &lt;label for="username"&gt;Full Name&lt;/label&gt;
+  &lt;input type="text" id="username" name="username" required minlength="3" placeholder="Beka Doe"&gt;
+
+  &lt;label for="useremail"&gt;Email Address&lt;/label&gt;
+  &lt;input type="email" id="useremail" name="useremail" required placeholder="beka@example.com"&gt;
+
+  &lt;label for="role"&gt;Select Track&lt;/label&gt;
+  &lt;select id="role" name="role"&gt;
+    &lt;option value="frontend"&gt;Frontend Engineer&lt;/option&gt;
+    &lt;option value="fullstack"&gt;Fullstack Dev&lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;button type="submit"&gt;Join Academy&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                    </div>
+
+                    <h4 class="text-lg font-bold text-white mt-4">Essential Form Attributes</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+                            <span class="font-mono text-orange-400 font-bold block mb-1">required</span>
+                            <span class="text-slate-400">Prevents form submission if input is left blank.</span>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+                            <span class="font-mono text-orange-400 font-bold block mb-1">autocomplete="on/off"</span>
+                            <span class="text-slate-400">Hints browser to offer saved autofill data.</span>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+                            <span class="font-mono text-orange-400 font-bold block mb-1">pattern="[A-Za-z]{3}"</span>
+                            <span class="text-slate-400">Regular expression match validation without JS.</span>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+                            <span class="font-mono text-orange-400 font-bold block mb-1">disabled vs readonly</span>
+                            <span class="text-slate-400">Readonly can still be submitted; disabled cannot.</span>
+                        </div>
+                    </div>
+                </div>
+            `,
+            domtree: `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-orange-500/20 text-orange-400">Lesson 03</span>
+                    <h3 class="text-2xl font-bold text-white">The DOM Tree & Page Architecture</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        When the browser receives your raw HTML text document, its parser turns every tag into a node in the <strong>Document Object Model (DOM)</strong> tree.
+                    </p>
+
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 font-mono text-xs text-slate-300">
+                        <div class="text-cyan-400">HTML (Root Node)</div>
+                        <div class="pl-4 border-l border-slate-800 mt-2 space-y-1">
+                            <div class="text-orange-400">&bull; HEAD</div>
+                            <div class="pl-6 border-l border-slate-800 text-slate-400">
+                                <div>- meta charset</div>
+                                <div>- title: "Beka's Code"</div>
+                                <div>- link (styles)</div>
+                            </div>
+                            <div class="text-emerald-400">&bull; BODY</div>
+                            <div class="pl-6 border-l border-slate-800 text-slate-400">
+                                <div>- header &gt; h1</div>
+                                <div>- main &gt; p</div>
+                                <div>- script (runs logic)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        JavaScript accesses this tree via the global object <code class="text-amber-400">document</code>. Every modification (adding elements, removing tags) causes recalculations called <strong>Reflow</strong> and <strong>Repaint</strong>.
+                    </p>
+                </div>
+            `,
+            cheatsheet: `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-orange-500/20 text-orange-400">Quick Reference</span>
+                    <h3 class="text-2xl font-bold text-white">HTML5 Quick Cheatsheet</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
+                            <span class="text-orange-400 font-bold block">Document Boilerplate</span>
+                            <div class="text-slate-400 leading-relaxed">
+                                &lt;!DOCTYPE html&gt;<br>
+                                &lt;html lang="en"&gt;<br>
+                                &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
+                            <span class="text-sky-400 font-bold block">Text Formatting</span>
+                            <div class="text-slate-400 leading-relaxed">
+                                &lt;strong&gt;Bold importance&lt;/strong&gt;<br>
+                                &lt;em&gt;Emphasized italics&lt;/em&gt;<br>
+                                &lt;code&gt;Inline code snippet&lt;/code&gt;
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
+                            <span class="text-amber-400 font-bold block">Lists & Tables</span>
+                            <div class="text-slate-400 leading-relaxed">
+                                &lt;ul&gt; &lt;li&gt;Unordered item&lt;/li&gt;<br>
+                                &lt;ol&gt; &lt;li&gt;Numbered item&lt;/li&gt;<br>
+                                &lt;table&gt;&lt;tr&gt;&lt;th&gt;&lt;td&gt;
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
+                            <span class="text-emerald-400 font-bold block">Media & Embeds</span>
+                            <div class="text-slate-400 leading-relaxed">
+                                &lt;img src="..." alt="..."&gt;<br>
+                                &lt;video controls src="..."&gt;<br>
+                                &lt;audio controls src="..."&gt;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        const cssLessons = {
+            boxmodel: `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-sky-500/20 text-sky-400">Lesson 01</span>
+                    <h3 class="text-2xl font-bold text-white">The CSS Box Model Explained</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Every single rendered element in CSS is a rectangular box. Understanding how margins, borders, paddings, and content interact is critical to prevent unexpected layout overflows.
+                    </p>
+
+                    <!-- Interactive Diagram -->
+                    <div class="p-6 bg-slate-950 rounded-2xl border border-slate-800 text-center font-mono text-xs my-6">
+                        <div class="p-6 bg-orange-950/40 border border-orange-500/40 rounded-xl text-orange-300">
+                            <span class="font-bold">MARGIN (Outside spacing)</span>
+                            <div class="p-6 bg-amber-950/40 border border-amber-500/40 rounded-xl text-amber-300 mt-2">
+                                <span class="font-bold">BORDER (Perimeter)</span>
+                                <div class="p-6 bg-sky-950/40 border border-sky-500/40 rounded-xl text-sky-300 mt-2">
+                                    <span class="font-bold">PADDING (Inner buffer)</span>
+                                    <div class="p-6 bg-blue-900/60 rounded-lg text-white font-bold mt-2">
+                                        CONTENT (Width & Height)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-950 rounded-xl border border-sky-500/30 font-mono text-xs text-sky-300">
+                        <p class="text-slate-300 mb-2 font-bold">Standard Pro-Tip: Reset Box Sizing Everywhere</p>
+                        <code>*, *::before, *::after {<br>
+                        &nbsp;&nbsp;box-sizing: border-box;<br>
+                        &nbsp;&nbsp;margin: 0;<br>
+                        &nbsp;&nbsp;padding: 0;<br>
+                        }</code>
+                    </div>
+                </div>
+            `,
+            flexbox: `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-sky-500/20 text-sky-400">Lesson 02</span>
+                    <h3 class="text-2xl font-bold text-white">Interactive Flexbox Visualizer</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Flexbox is a 1-dimensional layout engine. Test properties below live to see items dynamically reorient.
+                    </p>
+
+                    <!-- Interactive Visualizer Controls -->
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                        <div>
+                            <label class="block text-slate-400 font-mono mb-1">justify-content (Main)</label>
+                            <select id="flex-justify-select" onchange="updateFlexVisualizer()" class="w-full bg-slate-900 border border-slate-700 text-white rounded p-1.5 font-mono">
+                                <option value="flex-start">flex-start</option>
+                                <option value="center">center</option>
+                                <option value="space-between">space-between</option>
+                                <option value="space-around">space-around</option>
+                                <option value="flex-end">flex-end</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 font-mono mb-1">align-items (Cross)</label>
+                            <select id="flex-align-select" onchange="updateFlexVisualizer()" class="w-full bg-slate-900 border border-slate-700 text-white rounded p-1.5 font-mono">
+                                <option value="center">center</option>
+                                <option value="flex-start">flex-start</option>
+                                <option value="flex-end">flex-end</option>
+                                <option value="stretch">stretch</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 font-mono mb-1">flex-direction</label>
+                            <select id="flex-dir-select" onchange="updateFlexVisualizer()" class="w-full bg-slate-900 border border-slate-700 text-white rounded p-1.5 font-mono">
+                                <option value="row">row</option>
+                                <option value="column">column</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Visualizer Container -->
+                    <div id="flex-demo-stage" class="w-full h-48 bg-slate-950 border border-sky-500/30 rounded-2xl p-4 flex transition-all duration-300 items-center justify-start gap-3">
+                        <div class="w-16 h-16 bg-sky-500 rounded-xl flex items-center justify-center font-bold text-slate-950 text-sm shadow-lg">1</div>
+                        <div class="w-16 h-16 bg-sky-400 rounded-xl flex items-center justify-center font-bold text-slate-950 text-sm shadow-lg">2</div>
+                        <div class="w-16 h-16 bg-sky-300 rounded-xl flex items-center justify-center font-bold text-slate-950 text-sm shadow-lg">3</div>
+                    </div>
+                </div>
+            `,
+            grid: `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-sky-500/20 text-sky-400">Lesson 03</span>
+                    <h3 class="text-2xl font-bold text-white">CSS Grid in 5 Minutes</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        While Flexbox controls single rows or single columns, CSS Grid gives you true 2-dimensional power (rows AND columns simultaneously).
+                    </p>
+
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-sky-300 overflow-x-auto">
+                        <pre><code>.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 equal fractional units */
+  gap: 1.5rem;                           /* Gutters between cells */
+}
+
+/* Make an item take 2 columns */
+.featured-card {
+  grid-column: span 2;
+}</code></pre>
+                    </div>
+
+                    <!-- Mini Grid Demo Preview -->
+                    <div class="grid grid-cols-3 gap-3 p-4 bg-slate-950 rounded-xl border border-slate-800 font-mono text-xs text-center font-bold">
+                        <div class="col-span-2 p-3 bg-sky-500/20 border border-sky-500 text-sky-300 rounded-lg">col-span-2 (Hero)</div>
+                        <div class="p-3 bg-slate-800 text-slate-300 rounded-lg">Sidebar</div>
+                        <div class="p-3 bg-slate-800 text-slate-300 rounded-lg">Card A</div>
+                        <div class="p-3 bg-slate-800 text-slate-300 rounded-lg">Card B</div>
+                        <div class="p-3 bg-slate-800 text-slate-300 rounded-lg">Card C</div>
+                    </div>
+                </div>
+            `,
+            cheatsheet: `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-sky-500/20 text-sky-400">Quick Reference</span>
+                    <h3 class="text-2xl font-bold text-white">CSS Specificity & Unit Guide</h3>
+                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 text-xs font-mono space-y-2">
+                        <div class="text-purple-400 font-bold">Specificity Hierarchy (Lowest to Highest):</div>
+                        <p class="text-slate-400">1. Universal selector (*) &rarr; 0</p>
+                        <p class="text-slate-400">2. Element tag (p, div, h1) &rarr; 1</p>
+                        <p class="text-slate-400">3. Class / pseudo-class (.btn, :hover) &rarr; 10</p>
+                        <p class="text-slate-400">4. ID selector (#header) &rarr; 100</p>
+                        <p class="text-slate-400">5. Inline style (style="...") &rarr; 1000</p>
+                        <p class="text-red-400">6. !important &rarr; Overrides everything (use sparingly!)</p>
+                    </div>
+                </div>
+            `
+        };
+
+        const jsLessons = {
+            dom: `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-amber-500/20 text-amber-400">Lesson 01</span>
+                    <h3 class="text-2xl font-bold text-white">DOM Manipulation & Event Listeners</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        JavaScript's superpower is reacting to user actions (clicks, keypresses, scrolls) and updating the DOM live without page refreshes.
+                    </p>
+
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-amber-300 overflow-x-auto">
+                        <pre><code>// 1. Query the target element
+const actionBtn = document.querySelector("#my-button");
+const heading = document.querySelector("#title");
+
+// 2. Attach an event listener
+actionBtn.addEventListener("click", (event) => {
+    // 3. Mutate text content or CSS classes
+    heading.textContent = "Welcome to Beka's Code!";
+    heading.classList.toggle("text-amber-400");
+});</code></pre>
+                    </div>
+
+                    <!-- Mini Live DOM Playground -->
+                    <div class="p-4 bg-slate-950 rounded-xl border border-amber-500/30 space-y-3">
+                        <h4 class="text-xs font-mono text-slate-400 uppercase font-bold">Interactive DOM Test</h4>
+                        <div class="flex items-center gap-4">
+                            <p id="dom-demo-target" class="text-sm font-bold text-white transition-colors">Current Status: Idle</p>
+                            <button onclick="testDomButton()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs transition">
+                                Click to Trigger DOM Event
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `,
+            arrays: `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-amber-500/20 text-amber-400">Lesson 02</span>
+                    <h3 class="text-2xl font-bold text-white">Modern Array Methods: map, filter, reduce</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Avoid old imperative <code class="text-amber-400">for</code> loops. Modern JavaScript favors functional, immutable operations.
+                    </p>
+
+                    <div class="space-y-3 font-mono text-xs">
+                        <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                            <span class="text-amber-400 font-bold block mb-1">.map(fn) &rarr; Transform elements</span>
+                            <code class="text-slate-300">const doubled = [1, 2, 3].map(n =&gt; n * 2); // [2, 4, 6]</code>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                            <span class="text-sky-400 font-bold block mb-1">.filter(fn) &rarr; Select matching elements</span>
+                            <code class="text-slate-300">const evens = [1, 2, 3, 4].filter(n =&gt; n % 2 === 0); // [2, 4]</code>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                            <span class="text-emerald-400 font-bold block mb-1">.reduce(fn, init) &rarr; Accumulate into single value</span>
+                            <code class="text-slate-300">const sum = [10, 20, 30].reduce((acc, curr) =&gt; acc + curr, 0); // 60</code>
+                        </div>
+                    </div>
+                </div>
+            `,
+            async: `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-amber-500/20 text-amber-400">Lesson 03</span>
+                    <h3 class="text-2xl font-bold text-white">Asynchronous JavaScript: Promises & Async/Await</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        JavaScript is single-threaded. Time-consuming tasks like network requests (fetching data) happen asynchronously via the browser's Event Loop.
+                    </p>
+
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-amber-300 overflow-x-auto">
+                        <pre><code>async function fetchLearnerData(userId) {
+  try {
+    const res = await fetch(\`https://api.example.com/users/\${userId}\`);
+    if (!res.ok) throw new Error("Network response error");
+    
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error("Fetch failed:", err);
+  }
+}</code></pre>
+                    </div>
+                </div>
+            `,
+            "mini-runner": `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-amber-500/20 text-amber-400">Interactive Tester</span>
+                    <h3 class="text-2xl font-bold text-white">In-Lesson JS Runner</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Type any one-line expression below to run it safely inside your current browser session.
+                    </p>
+                    <div class="flex gap-2">
+                        <input id="js-quick-input" type="text" value="[1, 2, 3].map(x => x * 10)" class="flex-grow bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 font-mono text-sm text-amber-300 outline-none focus:border-amber-400">
+                        <button onclick="evalQuickJs()" class="px-5 py-2 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs hover:bg-amber-600 transition">
+                            Run
+                        </button>
+                    </div>
+                    <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 font-mono text-xs">
+                        <span class="text-slate-500">Output:</span>
+                        <div id="js-quick-output" class="text-emerald-400 mt-1">[10, 20, 30]</div>
+                    </div>
+                </div>
+            `
+        };
+
+        const sandboxTemplates = {
+            starter: {
+                html: `<!-- Welcome to Beka's Code Sandbox -->\n<div class="card">\n  <h1>Hello, Developer!</h1>\n  <p>Edit HTML, CSS, and JS to build awesome prototypes live.</p>\n  <button id="clickBtn">Click Me!</button>\n  <p id="counter">Clicks: 0</p>\n</div>`,
+                css: `/* Sandbox Stylesheet */\nbody {\n  font-family: system-ui, sans-serif;\n  background: #0f172a;\n  color: #f8fafc;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100vh;\n  margin: 0;\n}\n.card {\n  background: #1e293b;\n  padding: 2rem;\n  border-radius: 1rem;\n  box-shadow: 0 10px 25px rgba(0,0,0,0.5);\n  text-align: center;\n  border: 1px solid #334155;\n}\nh1 {\n  color: #38bdf8;\n  margin-top: 0;\n}\nbutton {\n  background: #f97316;\n  border: none;\n  padding: 0.75rem 1.5rem;\n  color: white;\n  font-weight: bold;\n  border-radius: 0.5rem;\n  cursor: pointer;\n  transition: 0.2s;\n}\nbutton:hover {\n  background: #ea580c;\n}`,
+                js: `// Interactive script\nlet count = 0;\nconst btn = document.getElementById('clickBtn');\nconst counterText = document.getElementById('counter');\n\nbtn.addEventListener('click', () => {\n  count++;\n  counterText.textContent = \`Clicks: \${count}\`;\n  btn.style.transform = 'scale(0.95)';\n  setTimeout(() => btn.style.transform = 'scale(1)', 100);\n});`
+            },
+            counter: {
+                html: `<div class="container">\n  <h2>Digital Tally</h2>\n  <div id="display">0</div>\n  <div class="btn-group">\n    <button id="dec">-</button>\n    <button id="reset">Reset</button>\n    <button id="inc">+</button>\n  </div>\n</div>`,
+                css: `body {\n  background: #111827;\n  color: white;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100vh;\n  margin: 0;\n  font-family: monospace;\n}\n.container {\n  text-align: center;\n  background: #1f2937;\n  padding: 2rem;\n  border-radius: 12px;\n}\n#display {\n  font-size: 3rem;\n  margin: 1rem 0;\n  color: #fbbf24;\n}\nbutton {\n  padding: 8px 16px;\n  margin: 0 4px;\n  background: #374151;\n  color: white;\n  border: none;\n  border-radius: 6px;\n  cursor: pointer;\n}\nbutton:hover { background: #4b5563; }`,
+                js: `let val = 0;\nconst disp = document.getElementById('display');\ndocument.getElementById('inc').onclick = () => { val++; disp.innerText = val; };\ndocument.getElementById('dec').onclick = () => { val--; disp.innerText = val; };\ndocument.getElementById('reset').onclick = () => { val = 0; disp.innerText = val; };`
+            },
+            cards: {
+                html: `<div class="grid">\n  <div class="product-card">\n    <span class="tag">HTML</span>\n    <h3>Semantics</h3>\n    <p>Build reliable foundations</p>\n  </div>\n  <div class="product-card active">\n    <span class="tag">CSS</span>\n    <h3>Flex & Grid</h3>\n    <p>Fluid adaptive layouts</p>\n  </div>\n  <div class="product-card">\n    <span class="tag">JS</span>\n    <h3>Interactivity</h3>\n    <p>Async web engines</p>\n  </div>\n</div>`,
+                css: `body {\n  background: #020617;\n  color: #e2e8f0;\n  font-family: sans-serif;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  min-height: 100vh;\n  margin: 0;\n}\n.grid {\n  display: flex;\n  gap: 1.5rem;\n  flex-wrap: wrap;\n  padding: 1rem;\n}\n.product-card {\n  background: #0f172a;\n  border: 1px solid #1e293b;\n  border-radius: 1rem;\n  padding: 1.5rem;\n  width: 180px;\n  transition: all 0.3s ease;\n}\n.product-card:hover {\n  transform: translateY(-5px);\n  border-color: #38bdf8;\n}\n.product-card.active {\n  border-color: #f97316;\n}\n.tag {\n  font-size: 0.75rem;\n  background: #334155;\n  padding: 2px 8px;\n  border-radius: 4px;\n}`,
+                js: `console.log("Card layout initialized!");`
+            }
+        };
+
+        function switchView(viewName) {
+            state.activeView = viewName;
+
+            // Hide all views
+            ['home', 'html', 'css', 'js', 'playground', 'quiz'].forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                if (el) el.classList.add('hidden');
+            });
+
+            // Show active
+            const current = document.getElementById(`view-${viewName}`);
+            if (current) current.classList.remove('hidden');
+
+            // Highlight nav buttons
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                if (btn.dataset.view === viewName) {
+                    btn.classList.add('bg-slate-800', 'text-white');
+                } else {
+                    btn.classList.remove('bg-slate-800', 'text-white');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (viewName === 'playground') {
+                runSandboxCode();
+            } else if (viewName === 'quiz') {
+                initQuiz();
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function setHtmlLesson(lessonId) {
+            state.activeHtmlLesson = lessonId;
+            document.querySelectorAll('.html-nav-btn').forEach(btn => {
+                if (btn.dataset.lesson === lessonId) {
+                    btn.className = "html-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition bg-slate-800 text-orange-400 border border-orange-500/30";
+                } else {
+                    btn.className = "html-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:bg-slate-800/60";
+                }
+            });
+            document.getElementById('html-content-area').innerHTML = htmlLessons[lessonId] || '';
+        }
+
+        function setCssLesson(lessonId) {
+            state.activeCssLesson = lessonId;
+            document.querySelectorAll('.css-nav-btn').forEach(btn => {
+                if (btn.dataset.lesson === lessonId) {
+                    btn.className = "css-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition bg-slate-800 text-sky-400 border border-sky-500/30";
+                } else {
+                    btn.className = "css-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:bg-slate-800/60";
+                }
+            });
+            document.getElementById('css-content-area').innerHTML = cssLessons[lessonId] || '';
+            if (lessonId === 'flexbox') {
+                updateFlexVisualizer();
+            }
+        }
+
+        function setJsLesson(lessonId) {
+            state.activeJsLesson = lessonId;
+            document.querySelectorAll('.js-nav-btn').forEach(btn => {
+                if (btn.dataset.lesson === lessonId) {
+                    btn.className = "js-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition bg-slate-800 text-amber-400 border border-amber-500/30";
+                } else {
+                    btn.className = "js-nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:bg-slate-800/60";
+                }
+            });
+            document.getElementById('js-content-area').innerHTML = jsLessons[lessonId] || '';
+        }
+
+        // Flex visualizer live function
+        function updateFlexVisualizer() {
+            const stage = document.getElementById('flex-demo-stage');
+            if (!stage) return;
+            const justify = document.getElementById('flex-justify-select').value;
+            const align = document.getElementById('flex-align-select').value;
+            const dir = document.getElementById('flex-dir-select').value;
+
+            stage.style.justifyContent = justify;
+            stage.style.alignItems = align;
+            stage.style.flexDirection = dir;
+        }
+
+        // Live DOM lesson helper
+        let domCount = 0;
+        function testDomButton() {
+            domCount++;
+            const target = document.getElementById('dom-demo-target');
+            if (target) {
+                target.innerText = `Event fired! Count: ${domCount}`;
+                target.style.color = domCount % 2 === 0 ? '#38bdf8' : '#fbbf24';
+            }
+        }
+
+        // Quick JS expression evaluator
+        function evalQuickJs() {
+            const input = document.getElementById('js-quick-input').value;
+            const output = document.getElementById('js-quick-output');
+            try {
+                // Safe evaluation in local scope
+                const res = Function(`"use strict"; return (${input})`)();
+                output.innerText = typeof res === 'object' ? JSON.stringify(res) : String(res);
+                output.className = "text-emerald-400 mt-1";
+            } catch (err) {
+                output.innerText = err.message;
+                output.className = "text-red-400 mt-1";
+            }
+        }
+
+        function selectEditorTab(tab) {
+            state.activeEditorTab = tab;
+            ['html', 'css', 'js'].forEach(t => {
+                const area = document.getElementById(`editor-${t}`);
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tab) {
+                    area.classList.remove('hidden');
+                    btn.className = `px-3 py-1.5 rounded-lg bg-${t === 'html' ? 'orange' : t === 'css' ? 'sky' : 'amber'}-500/20 text-${t === 'html' ? 'orange' : t === 'css' ? 'sky' : 'amber'}-400 font-semibold border border-${t === 'html' ? 'orange' : t === 'css' ? 'sky' : 'amber'}-500/30 flex items-center gap-1.5`;
+                } else {
+                    area.classList.add('hidden');
+                    btn.className = 'px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 transition flex items-center gap-1.5';
+                }
+            });
+        }
+
+        function runSandboxCode() {
+            const html = document.getElementById('editor-html').value;
+            const css = document.getElementById('editor-css').value;
+            const js = document.getElementById('editor-js').value;
+            const iframe = document.getElementById('sandbox-preview');
+
+            const compositeDoc = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <style>${css}</style>
+                </head>
+                <body>
+                    ${html}
+                    <script>
+                        try {
+                            ${js}
+                        } catch(err) {
+                            console.error("User script error:", err);
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `;
+            iframe.srcdoc = compositeDoc;
+        }
+
+        function resetSandboxTemplate(key) {
+            const t = sandboxTemplates[key] || sandboxTemplates.starter;
+            document.getElementById('editor-html').value = t.html;
+            document.getElementById('editor-css').value = t.css;
+            document.getElementById('editor-js').value = t.js;
+            runSandboxCode();
+        }
+
+        function loadTopicInSandbox(topic) {
+            switchView('playground');
+            if (topic === 'html') {
+                resetSandboxTemplate('starter');
+                selectEditorTab('html');
+            } else if (topic === 'css') {
+                resetSandboxTemplate('cards');
+                selectEditorTab('css');
+            } else if (topic === 'js') {
+                resetSandboxTemplate('counter');
+                selectEditorTab('js');
+            }
+        }
+
+        function setQuizCategory(cat) {
+            state.quiz.category = cat;
+            document.querySelectorAll('.quiz-cat-btn').forEach(btn => {
+                btn.className = 'quiz-cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition';
+            });
+            const activeBtn = document.getElementById(`quiz-btn-${cat}`);
+            if (activeBtn) {
+                activeBtn.className = 'quiz-cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-purple-600 text-white shadow-md shadow-purple-600/30 transition';
+            }
+            initQuiz();
+        }
+
+        function startQuizWithTopic(topic) {
+            switchView('quiz');
+            setQuizCategory(topic);
+        }
+
+        function initQuiz() {
+            const cat = state.quiz.category;
+            if (cat === 'all') {
+                state.quiz.filteredList = [...quizBank];
+            } else {
+                state.quiz.filteredList = quizBank.filter(q => q.category === cat);
+            }
+            state.quiz.currentIndex = 0;
+            state.quiz.score = 0;
+            state.quiz.answered = false;
+            state.quiz.selectedAnswer = null;
+
+            document.getElementById('quiz-box').classList.remove('hidden');
+            document.getElementById('quiz-results-card').classList.add('hidden');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = state.quiz.filteredList[state.quiz.currentIndex];
+            if (!q) return;
+
+            state.quiz.answered = false;
+            state.quiz.selectedAnswer = null;
+
+            // Update Progress & Badges
+            const currentNum = state.quiz.currentIndex + 1;
+            const total = state.quiz.filteredList.length;
+            const pct = ((currentNum - 1) / total) * 100;
+
+            document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+            document.getElementById('quiz-question-number').innerText = `Question ${currentNum} of ${total}`;
+            document.getElementById('current-score-text').innerText = `${state.quiz.score}`;
+
+            const badgeCat = document.getElementById('quiz-badge-category');
+            badgeCat.innerText = q.category.toUpperCase();
+            if (q.category === 'html') badgeCat.className = 'px-2.5 py-0.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 font-bold text-[10px]';
+            else if (q.category === 'css') badgeCat.className = 'px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 font-bold text-[10px]';
+            else badgeCat.className = 'px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold text-[10px]';
+
+            document.getElementById('quiz-question-text').innerText = q.question;
+
+            // Render options
+            const optionsBox = document.getElementById('quiz-options-container');
+            optionsBox.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const optBtn = document.createElement('button');
+                optBtn.className = 'w-full text-left p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-200 text-sm font-medium flex items-center justify-between transition group';
+                optBtn.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-lg bg-slate-800 text-slate-400 group-hover:text-white flex items-center justify-center font-mono text-xs font-bold">${String.fromCharCode(65 + idx)}</span>
+                        <span>${escapeHtml(opt)}</span>
+                    </div>
+                    <i class="fa-regular fa-circle text-slate-600 group-hover:text-slate-400"></i>
+                `;
+                optBtn.onclick = () => selectOption(idx, optBtn);
+                optionsBox.appendChild(optBtn);
+            });
+
+            // Hide explanation
+            document.getElementById('quiz-explanation-box').classList.add('hidden');
+            document.getElementById('quiz-next-btn').disabled = true;
+        }
+
+        function selectOption(index, btnElement) {
+            if (state.quiz.answered) return;
+            state.quiz.answered = true;
+            state.quiz.selectedAnswer = index;
+
+            const q = state.quiz.filteredList[state.quiz.currentIndex];
+            const isCorrect = (index === q.answer);
+            if (isCorrect) state.quiz.score++;
+
+            // Highlight buttons
+            const options = document.getElementById('quiz-options-container').children;
+            for (let i = 0; i < options.length; i++) {
+                const el = options[i];
+                if (i === q.answer) {
+                    el.className = 'w-full text-left p-4 rounded-xl bg-emerald-950/40 border border-emerald-500 text-emerald-300 text-sm font-medium flex items-center justify-between';
+                    el.querySelector('i').className = 'fa-solid fa-circle-check text-emerald-400';
+                } else if (i === index && !isCorrect) {
+                    el.className = 'w-full text-left p-4 rounded-xl bg-rose-950/40 border border-rose-500 text-rose-300 text-sm font-medium flex items-center justify-between';
+                    el.querySelector('i').className = 'fa-solid fa-circle-xmark text-rose-400';
+                } else {
+                    el.className = 'w-full text-left p-4 rounded-xl bg-slate-950/40 border border-slate-800/40 opacity-50 text-slate-400 text-sm font-medium flex items-center justify-between';
+                }
+            }
+
+            // Display Explanation
+            const expBox = document.getElementById('quiz-explanation-box');
+            const expHeader = document.getElementById('explanation-header');
+            const expText = document.getElementById('quiz-explanation-text');
+
+            if (isCorrect) {
+                expHeader.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i> Correct! Excellent comprehension.';
+                expHeader.className = 'flex items-center gap-2 font-bold text-emerald-400';
+            } else {
+                expHeader.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-400"></i> Incorrect. Review the concept below:';
+                expHeader.className = 'flex items-center gap-2 font-bold text-rose-400';
+            }
+
+            expText.innerHTML = q.explanation;
+            expBox.classList.remove('hidden');
+
+            document.getElementById('current-score-text').innerText = `${state.quiz.score}`;
+            document.getElementById('quiz-next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (state.quiz.currentIndex < state.quiz.filteredList.length - 1) {
+                state.quiz.currentIndex++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-box').classList.add('hidden');
+            const resultsCard = document.getElementById('quiz-results-card');
+            resultsCard.classList.remove('hidden');
+
+            const total = state.quiz.filteredList.length;
+            const score = state.quiz.score;
+            const pct = Math.round((score / total) * 100);
+
+            document.getElementById('results-score-display').innerText = `${score} / ${total}`;
+            document.getElementById('results-percentage').innerText = `${pct}% Mastery`;
+
+            // Badge check
+            const unlockPill = document.getElementById('results-badge-unlock');
+            if (pct >= 70) {
+                unlockPill.classList.remove('hidden');
+                const cat = state.quiz.category;
+                if (cat === 'html') state.badges.html = true;
+                if (cat === 'css') state.badges.css = true;
+                if (cat === 'js') state.badges.js = true;
+                if (cat === 'all') {
+                    state.badges.html = true;
+                    state.badges.css = true;
+                    state.badges.js = true;
+                }
+                unlockPill.innerHTML = `<i class="fa-solid fa-medal mr-1"></i> Outstanding! You unlocked the <strong>${cat.toUpperCase()} Master</strong> badge!`;
+                updateBadgeDisplay();
+            } else {
+                unlockPill.classList.add('hidden');
+            }
+        }
+
+        function restartQuiz() {
+            initQuiz();
+        }
+
+        function updateBadgeDisplay() {
+            const count = Object.values(state.badges).filter(Boolean).length;
+            document.getElementById('badge-count').innerText = `${count}/3 Badges`;
+        }
+
+        function escapeHtml(string) {
+            return String(string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Initialize default lesson panes
+            setHtmlLesson('semantics');
+            setCssLesson('boxmodel');
+            setJsLesson('dom');
+
+            // Initialize Sandbox Defaults
+            resetSandboxTemplate('starter');
+
+            // Hook input changes for live update in sandbox
+            ['editor-html', 'editor-css', 'editor-js'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('keydown', (e) => {
+                        // Allow Tab indentation
+                        if (e.key === 'Tab') {
+                            e.preventDefault();
+                            const start = el.selectionStart;
+                            const end = el.selectionEnd;
+                            el.value = el.value.substring(0, start) + "  " + el.value.substring(end);
+                            el.selectionStart = el.selectionEnd = start + 2;
+                        }
+                    });
+                }
+            });
+
+            // Start home view
+            switchView('home');
+        });
+    </script>
+</body>
+</html>
